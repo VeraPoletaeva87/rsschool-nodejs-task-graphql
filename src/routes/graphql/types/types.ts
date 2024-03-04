@@ -69,7 +69,7 @@ const memberTypeFields = {
     fields: postTypeFields,
   });
   
-  export const UserType = new GraphQLObjectType<UserBody, Context>({
+  export const UserType = new GraphQLObjectType({
     name: 'UserType', 
     fields: () => ({
       id: { type: UUIDType },
@@ -78,7 +78,7 @@ const memberTypeFields = {
       profile: {
           type: ProfileType,
           resolve: async (user: UserBody, _, ctx: Context) => {
-              const profile = await ctx.profileLoader.load(user.id);
+            const profile = await ctx.prisma.profile.findFirst({ where: { userId: user.id } });
           if (!profile) {
             return null; 
           }
@@ -88,7 +88,11 @@ const memberTypeFields = {
       posts: {
         type: new GraphQLList(PostType),
         resolve: async (user, _, ctx: Context) => {
-          const posts = await ctx.postsLoader.load(user.id);
+          const posts = await ctx.prisma.post.findMany({ where: 
+            {
+               authorId: user.id 
+            } 
+          });
           if (!posts) {
             return null; 
           }
@@ -128,7 +132,7 @@ const memberTypeFields = {
     })
   });
 
-  export type Context = ReturnType<typeof getLoaders> & {
+  export type Context = {
     prisma: PrismaClient;
   };
 
@@ -138,4 +142,10 @@ const memberTypeFields = {
     yearOfBirth: number;
     userId: string;
     memberTypeId: string;
+  };
+
+  export type User_Type = {
+    id: string;
+    name: string;
+    balance: number;
   };

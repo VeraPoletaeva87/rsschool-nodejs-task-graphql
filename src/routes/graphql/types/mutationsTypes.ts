@@ -1,4 +1,4 @@
-import { GraphQLBoolean, GraphQLInputObjectType, GraphQLInt, GraphQLNonNull, GraphQLString } from "graphql";
+import { GraphQLBoolean, GraphQLFloat, GraphQLInputObjectType, GraphQLInt, GraphQLNonNull, GraphQLString } from "graphql";
 import { UUIDType } from "./uuid.js";
 import { MemberTypeIdType } from "./types.js";
 
@@ -16,7 +16,7 @@ export type User_Type = {
   balance: number;
 };
 
-export const ChangePostInputType = new GraphQLInputObjectType({
+export const ChangePostInput = new GraphQLInputObjectType({
   name: 'ChangePostInput',
   fields: () => ({
     authorId: { type: UUIDType },
@@ -25,12 +25,12 @@ export const ChangePostInputType = new GraphQLInputObjectType({
   }),
 });
 
-export const PostCreateInput = new GraphQLInputObjectType({
+export const CreatePostInput = new GraphQLInputObjectType({
   name: 'CreatePostInput',
   fields: {
-    authorId: { type: new GraphQLNonNull(UUIDType) },
-    title: { type: new GraphQLNonNull(GraphQLString) },
-    content: { type: new GraphQLNonNull(GraphQLString) },
+    authorId: { type: UUIDType },
+    title: { type:GraphQLString },
+    content: { type: GraphQLString },
   },
 });
 
@@ -51,4 +51,20 @@ export const ChangeProfileInput = new GraphQLInputObjectType({
     isMale: { type: GraphQLBoolean },
     yearOfBirth: { type: GraphQLInt },
   },
+});
+
+export const CreateUserInput = new GraphQLInputObjectType({
+  name: 'CreateUserInput',
+  fields: () => ({
+    name: { type: GraphQLString },
+    balance: { type: GraphQLFloat },
+  }),
+});
+
+export const ChangeUserInput = new GraphQLInputObjectType({
+  name: 'ChangeUserInput',
+  fields: () => ({
+    name: { type: GraphQLString },
+    balance: { type: GraphQLFloat },
+  }),
 });
